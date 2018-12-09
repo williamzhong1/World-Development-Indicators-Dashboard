@@ -16,14 +16,14 @@ df = pd.read_sql('''
                 FROM Indicators AS i
                 INNER JOIN Country AS c
                 ON c.CountryCode = i.CountryCode
-                WHERE i.IndicatorCode = 'SP.DYN.LE00.IN' 
+                WHERE i.IndicatorCode = 'SP.DYN.LE00.IN'
                 OR i.IndicatorCode = 'NY.GDP.PCAP.CD'
                 OR i.IndicatorCode = 'EN.ATM.CO2E.KT'
                 OR i.IndicatorCode = 'EN.ATM.CO2E.PC'
                 OR i.IndicatorCode = 'EN.ATM.CO2E.GF.ZS'
                 OR i.IndicatorCode = 'EN.ATM.CO2E.LF.ZS'
                 OR i.IndicatorCode = 'EN.ATM.CO2E.LF.KT'
-                OR i.IndicatorCode = 'EN.ATM.CO2E.SF.ZS' 
+                OR i.IndicatorCode = 'EN.ATM.CO2E.SF.ZS'
                 ''', con = conn)
 
 print("SQL Query competed in" + "--- %s seconds ---" % (time.time() - start_time))
@@ -32,16 +32,11 @@ print("SQL Query competed in" + "--- %s seconds ---" % (time.time() - start_time
 
 app = dash.Dash()
 
-my_css_url = "https://unpkg.com/normalize.css@5.0.0"
-app.css.append_css({
-    "external_url": my_css_url
-})
-
 
 app.layout = html.Div([
     html.H1(children = "World Development Indicators"),
     html.Div(
-        children = "Visualisations using Kaggle Data", style = {"padding-bottom" : "60px"}
+        children = "Visualisations using World Development Indicators Data", style = {"padding-bottom" : "60px"}
     ),
     html.Div([
     dcc.Dropdown(
@@ -55,7 +50,7 @@ app.layout = html.Div([
 
     ], style = {"margin-bottom" : "60px"}),
     html.Div(children = "Life Expectancy and GDP is a common indicator of human welfare. There are several notable trends. " +
-                        "First is the shape of the graph. " + "There appears to be a inverse square relationship, where the trend line cuttng through the data curves toward an asymptote. " +
+                        "First is the shape of the graph. " + "There appears to be a inverse square relationship, where the trend line cutting through the data curves toward an asymptote. " +
                         "This is interesting because it suggests that no matter the GDP-Per Capita, all countries will run against a hard limit where they can no longer improve life expectancy. "
                         "The hard limit is most likely set by limits to which health technology can improve life expectancy. " +
                         "Second is the fact that the hard limit discussed previously has shifted over the past decades, increasing with the wider availability and growth in " +
@@ -77,10 +72,14 @@ app.layout = html.Div([
 
     html.Div([
             dcc.Graph(id = "CO2-Fill"),
-    ], style = {"width" : "50%", "display" : "inline-block"}),
+    ]
+    ,style = {"width" : "50%", "display" : "inline-block"}
+    ),
     html.Div([
         dcc.Graph(id="CO2-Overall")
-    ], style = {"width" : "50%", "display" : "inline-block"}),
+    ]
+    , style = {"width" : "50%", "display" : "inline-block"}
+    ),
 html.Div(children = "Note: the stacked bar chart on the left will not add up to 100% for some countries because of missing data. " +
                     "Hover over graph to read indicators. " + "Notable trends: Across different countries, there has been an increase " +
                     "in gaseous forms of fossil fuels and there has been an overall increase on C02 emissions from all countries. "
@@ -162,15 +161,13 @@ def update_figure1(selected_country):
 def update_figure2(selected_country):
     filtered_df2 = df[df.IndicatorCode.isin(["EN.ATM.CO2E.KT"])]
     filtered_df2_byCountry = filtered_df2[filtered_df2.ShortName == selected_country]
-    traces2 = [
-        go.Bar(
-            x = filtered_df2_byCountry["Year"].tolist(),
-            y = filtered_df2_byCountry["Value"].tolist(),
-            text = filtered_df2_byCountry["IndicatorName"].unique(),
-            name = filtered_df2_byCountry["IndicatorName"].unique()
-        )
-    ]
-
+    traces2 = []
+    traces2.append(go.Bar(
+        x = filtered_df2_byCountry["Year"].tolist(),
+        y = filtered_df2_byCountry["Value"].tolist(),
+        text = str(filtered_df2_byCountry["IndicatorName"].unique()),
+        name = str(filtered_df2_byCountry["IndicatorName"].unique())
+    ))
     return {
         "data": traces2,
         "layout": go.Layout(
