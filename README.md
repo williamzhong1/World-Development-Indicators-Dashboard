@@ -4,7 +4,7 @@ Simple data dashboard built in Python, based on Dash & Flask. The app serves a s
 
 Plots are interactive, allowing the user to filter the displayed data based on different countries and year. Data is pulled in from a SQLite database, and handled using Pandas.
 
-**Please view 'Demo' video**
+**Please view 'Demo' video** accessible [here](https://youtu.be/1wybdaavOPU) or downloadable from the repository 
 
 ## Dependencies
 This app relies on external modules and the database file. To run this app yourself you will need to install Dash, Plotly and Pandas via pip. Database file available on request.
